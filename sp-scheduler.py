@@ -33,7 +33,7 @@ def main():
     for event in w.stream(v1.list_namespaced_pod, "default"):
         if event['object'].status.phase == "Pending" and event['object'].spec.scheduler_name == scheduler_name:
             try:
-                pod_name = event['object'].metadata.name).strip()
+                pod_name = event['object'].metadata.name.strip()
                 selected_node = spot_over_non_spot_always(pod_name)
                 res = scheduler(event['object'].metadata.name, selected_node)
             except client.rest.ApiException as e:
