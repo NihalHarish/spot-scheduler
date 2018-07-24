@@ -39,18 +39,18 @@ def choose_random_node(nodes):
     return random.choice(nodes)
 
 
-def is_driver_pod(pod_name):
-    spark_pod_type = pod_name.split('-')[-1]
-    return spark_pod_type == 'driver'
+def is_driver_pod(pod):
+    spark_role = pod.metadata.labels['spark_role']
+    return spark_role == 'driver'
 
 
-def spot_over_non_spot_always(pod_name):
+def spot_over_non_spot_always(pod):
     '''
         Chooses a spot node always except
         if the requesting pod is a driver
     '''
 
-    if is_driver_pod(pod_name):
+    if is_driver_pod(pod):
         persistent_nodes = get_available_persistent_nodes()
         return choose_random_node(persistent_nodes)
     else:
