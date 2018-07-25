@@ -38,7 +38,7 @@ def main():
                 selected_node = spot_over_non_spot_always(requesting_pod).metadata.name
                 res = scheduler(pod_name, selected_node)
             except client.rest.ApiException as e:
-                print(json.loads(e.body)['message'])
+                pass
             except ValueError as ve:
                 pass
 
