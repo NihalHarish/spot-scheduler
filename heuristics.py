@@ -41,7 +41,7 @@ def choose_random_node(nodes):
 
 
 def is_driver_pod(pod):
-    spark_role = pod.metadata.labels['spark_role']
+    spark_role = pod.metadata.labels['spark-role']
     return spark_role == 'driver'
 
 
