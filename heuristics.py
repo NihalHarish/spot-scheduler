@@ -81,7 +81,7 @@ def get_instance_zone(node):
     return node.metadata.labels['failure-domain.beta.kubernetes.io/zone']
 
 
-def get_node_volatilty(node):
+def get_node_volatility(node):
     instance_type = get_instance_type(node)
     bid = get_instance_bid_price(instance_type)
     time_span = 5
