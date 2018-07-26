@@ -5,7 +5,7 @@ import numpy as np
 import kubernetes.client
 
 from kubernetes import client, config, watch
-from heuristics import spot_over_non_spot_always
+from heuristics import spot_over_non_spot_always, least_volatile_nodes_always
 
 config.load_kube_config('./config-spark-on-cat')
 v1=client.CoreV1Api()
