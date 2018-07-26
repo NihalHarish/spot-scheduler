@@ -101,7 +101,7 @@ def least_volatile_nodes_always(pod):
         spot_nodes = get_available_spot_nodes()
         volatility_values = []
         for node in spot_nodes:
-            volatility = get_node_volatilty(node)
+            volatility = get_node_volatility(node)
             if volatility in volatility_map:
                 volatility_map[volatility].append(node)
             else:
