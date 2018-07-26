@@ -93,13 +93,17 @@ def validate_product_choice(product_choice):
     return product_choice in product_choices
 
 
-def get_instance_volatility(instance_name, bid, time_span, product_choice):
+def get_instance_volatility(instance_name, bid, time_span, product_choice, zone):
     region = get_current_region()
     profile = [] #working with only default profiles for now
-    return get_last_spot_price_exceeding_the_bid(profile, time_span, instance_name, region, product_choice, bid)
+    volatility_map = get_last_spot_price_exceeding_the_bid(profile, time_span, instance_name, region, product_choice, bid)
+    for key in volatility_map:
+        if key[1] == zone:
+            return volatility_map[key]
+    return None
 
 def check_is_spot_instance(instance_name):
     pass
 
 if __name__ == '__main__':
-    print(get_instance_volatility("c3.8xlarge", 2, 2, "Linux/UNIX"))
+    print(get_instance_volatility("m1.xlarge", 0.02, 168, "Linux/UNIX"))

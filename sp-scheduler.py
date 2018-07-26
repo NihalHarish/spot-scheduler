@@ -11,7 +11,6 @@ config.load_kube_config('./config-spark-on-cat')
 v1=client.CoreV1Api()
 
 scheduler_name = "spot-scheduler"
-spot_percent = float("0.8")
 
 def get_volatility_metrics(instance_name):
     pass
@@ -35,10 +34,10 @@ def main():
             try:
                 requesting_pod = event['object']
                 pod_name = event['object'].metadata.name
-                selected_node = spot_over_non_spot_always(requesting_pod).metadata.name
+                selected_node = least_volatile_nodes_always(requesting_pod).metadata.name
                 res = scheduler(pod_name, selected_node)
             except client.rest.ApiException as e:
-                pass
+                print(json.loads(e.body)['message'])
             except ValueError as ve:
                 pass
 

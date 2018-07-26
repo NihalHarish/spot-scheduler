@@ -86,13 +86,12 @@ def get_node_volatility(node):
     bid = get_instance_bid_price(instance_type)
     time_span = 5
     product_choice = "Linux/UNIX"
-    return get_instance_volatility(instance_type, bid, time_span, product_choice)
-
+    instance_zone = get_instance_zone(node)
+    return get_instance_volatility(instance_type, bid, time_span, product_choice, instance_zone)
 
 def least_volatile_nodes_always(pod):
     '''
         Chooses the least volatile spot node
-
     '''
     if is_driver_pod(pod):
         persistent_nodes = get_available_persistent_nodes()
