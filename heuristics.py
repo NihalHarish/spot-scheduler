@@ -113,5 +113,5 @@ def least_volatile_nodes_always(pod):
         for v in volatility_map:
             debug_map[v] = [node.metadata.name + '-' + str(get_instance_type(node)) for node in volatility_map[v]]
         #print("Volatility Map: {}".format(debug_map))
-        #print("Selected Node: {}".format(choose_random_node(volatility_map[max(volatility_values)]).metadata.name))
+        print("Selected Node: {}".format(choose_random_node(volatility_map[max(volatility_values)]).metadata.name))
         return choose_random_node(volatility_map[max(volatility_values)])
