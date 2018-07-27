@@ -5,6 +5,8 @@ from kubernetes import client, config, watch
 from aws_metrics import get_instance_volatility
 
 SPOT_LABEL = 'spot-instance'
+VOLATILITY_SPAN = 168
+AWS_
 
 config.load_kube_config('./config-spark-on-cat')
 v1 = client.CoreV1Api()
@@ -84,10 +86,10 @@ def get_instance_zone(node):
 def get_node_volatility(node):
     instance_type = get_instance_type(node)
     bid = get_instance_bid_price(instance_type)
-    time_span = 5
-    product_choice = "Linux/UNIX"
-    instance_zone = get_instance_zone(node)
-    return get_instance_volatility(instance_type, bid, time_span, product_choice, instance_zone)
+    product = "Linux/UNIX"
+    zone = get_instance_zone(node)
+    hours = 168
+    return get_volatility_metrics(hours, instance_type, product, bid, zone)
 
 def least_volatile_nodes_always(pod):
     '''

@@ -31,6 +31,8 @@ import time
 from subprocess import Popen, PIPE
 
 # Call AWS CLI and obtain JSON output, we could've also used tabular or text, but json is easier to parse.
+
+__PROFILE__ = []
 def make_call(cmdline, profile):
     cmd_args = ['aws', '--output', 'json'] + (['--profile', profile] if profile else []) + cmdline
     p = Popen(cmd_args, stdout=PIPE)
@@ -92,19 +94,38 @@ def validate_product_choice(product_choice):
 
     return product_choice in product_choices
 
+def get_volatility_metrics(hours, instance_type, product, bid, zone):
+    profile = __PROFILE__
+    region = get_current_region()
+    result = {}
+    result.update(get_last_spot_price_exceeding_the_bid(profile, hours, instance_type, region, product, bid))
+    unix_now = time.time()
+    sorted_list = list(result.keys())
+    sorted_list.sort(key=lambda x: (result.get(x, 0), x))
+    #print "Duration\tInstance Type\tAvailability Zone"
+    for it in sorted_list:
+        if it[1] == zone:
+            date = result.get(it, 0)
+            #print "%.1f\t%s\t%s" % ((unix_now - date)/3600.0, it[0], it[1])
+            return round((unix_now - date)/3600.0, 2)
+    return None
 
 def get_instance_volatility(instance_name, bid, time_span, product_choice, zone):
     region = get_current_region()
     profile = [] #working with only default profiles for now
     print("Request: Instance-Name {} Time Span {} Bid {} Product Choice {} Zone {}".format(instance_name, bid, time_span, product_choice, zone))
-    volatility_map = get_last_spot_price_exceeding_the_bid(profile, time_span, instance_name, region, product_choice, bid)
+    '''
+    volatility_map = get_last_spot_price_exceeding_the_bid(profile, 168, instance_name, region, product_choice, bid)
     for key in volatility_map:
         if key[1] == zone:
             return volatility_map[key]
     return None
+    '''
+    return get_last_spot_price_exceeding_the_bid(profile, 168, instance_name, region, product_choice, bid)
 
 def check_is_spot_instance(instance_name):
     pass
 
 if __name__ == '__main__':
-    print(get_instance_volatility("m1.xlarge", 0.02, 168, "Linux/UNIX", "us-east-1a"))
+    #print(get_instance_volatility("m1.xlarge", 0.02, 168, "Linux/UNIX", "us-east-1a"))
+    print(get_volatility_metrics(168, "m1.xlarge", "Linux/UNIX", 0.1, "us-east-1d"))
