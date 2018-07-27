@@ -2,11 +2,11 @@ import random
 
 from kubernetes import client, config, watch
 
-from aws_metrics import get_instance_volatility
+from aws_metrics import get_volatility_metrics
 
 SPOT_LABEL = 'spot-instance'
 VOLATILITY_SPAN = 168
-AWS_
+
 
 config.load_kube_config('./config-spark-on-cat')
 v1 = client.CoreV1Api()
@@ -114,4 +114,4 @@ def least_volatile_nodes_always(pod):
             debug_map[v] = [node.metadata.name + '-' + str(get_instance_type(node)) for node in volatility_map[v]]
         print("Volatility Map: {}".format(debug_map))
         print("Selected Node: {}".format(choose_random_node(volatility_map[min(volatility_values)]).metadata.name))
-        return choose_random_node(volatility_map[min(volatility_values)])
+        return choose_random_node(volatility_map[max(volatility_values)])
