@@ -5,13 +5,12 @@ import numpy as np
 import kubernetes.client
 
 from kubernetes import client, config, watch
-from heuristics import spot_over_non_spot_always
+from heuristics import spot_over_non_spot_always, least_volatile_nodes_always
 
 config.load_kube_config('./config-spark-on-cat')
 v1=client.CoreV1Api()
 
 scheduler_name = "spot-scheduler"
-spot_percent = float("0.8")
 
 def get_volatility_metrics(instance_name):
     pass
@@ -33,9 +32,10 @@ def main():
     for event in w.stream(v1.list_namespaced_pod, "default"):
         if event['object'].status.phase == "Pending" and event['object'].spec.scheduler_name == scheduler_name:
             try:
-                pod_name = event['object'].metadata.name).strip()
-                selected_node = spot_over_non_spot_always(pod_name)
-                res = scheduler(event['object'].metadata.name, selected_node)
+                requesting_pod = event['object']
+                pod_name = event['object'].metadata.name
+                selected_node = least_volatile_nodes_always(requesting_pod).metadata.name
+                res = scheduler(pod_name, selected_node)
             except client.rest.ApiException as e:
                 print(json.loads(e.body)['message'])
             except ValueError as ve:
